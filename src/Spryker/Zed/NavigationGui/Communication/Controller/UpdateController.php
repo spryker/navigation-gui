@@ -47,7 +47,6 @@ class UpdateController extends AbstractController
             ->handleRequest($request);
 
         if ($navigationForm->isSubmitted() && $navigationForm->isValid()) {
-            /** @var \Generated\Shared\Transfer\NavigationTransfer $navigationTransfer */
             $navigationTransfer = $navigationForm->getData();
             $this->getFactory()
                 ->getNavigationFacade()
