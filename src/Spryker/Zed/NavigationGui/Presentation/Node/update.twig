@@ -13,10 +13,10 @@
         {% endif %}
         {{ form_start(navigationNodeForm) }}
 
-            <div class="ibox-title">
+            <div class="ibox-title clearfix">
                 <h5>{{ 'Edit node' | trans }}</h5>
 
-                <div class="pull-right">
+                <div class="float-end">
                     <a href="{{ url('/navigation-gui/node/create', {'id-navigation': idNavigation, 'id-navigation-node': idNavigationNode}) }}" id="add-child-node-btn" class="btn btn-xs btn-primary">
                         <i class="fa fa-pencil-square-o"></i> {{ 'Create child node' | trans }}
                     </a>
