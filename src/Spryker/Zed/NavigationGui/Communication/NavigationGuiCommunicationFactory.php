@@ -82,9 +82,6 @@ class NavigationGuiCommunicationFactory extends AbstractCommunicationFactory
         return $this->getFormFactory()->create(DuplicateNavigationForm::class, $data, $options);
     }
 
-    /**
-     * @return \Symfony\Component\Form\FormInterface
-     */
     public function createDeleteNavigationForm(): FormInterface
     {
         return $this->getFormFactory()->create(DeleteNavigationForm::class);
@@ -174,9 +171,6 @@ class NavigationGuiCommunicationFactory extends AbstractCommunicationFactory
         return new NavigationNodeFormDataProvider($this->getNavigationFacade(), $this->getLocaleFacade());
     }
 
-    /**
-     * @return \Symfony\Component\Form\FormInterface
-     */
     public function createDeleteNavigationNodeForm(): FormInterface
     {
         return $this->getFormFactory()->create(DeleteNavigationNodeForm::class);

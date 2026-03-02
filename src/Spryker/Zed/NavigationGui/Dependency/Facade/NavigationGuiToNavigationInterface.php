@@ -17,81 +17,25 @@ use Generated\Shared\Transfer\NavigationTreeTransfer;
 
 interface NavigationGuiToNavigationInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\NavigationTransfer $navigationTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationTransfer
-     */
     public function createNavigation(NavigationTransfer $navigationTransfer): NavigationTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationTransfer $navigationTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationTransfer
-     */
     public function updateNavigation(NavigationTransfer $navigationTransfer): NavigationTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationTransfer $navigationTransfer
-     *
-     * @return void
-     */
     public function deleteNavigation(NavigationTransfer $navigationTransfer): void;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationNodeTransfer $navigationNodeTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationNodeTransfer
-     */
     public function createNavigationNode(NavigationNodeTransfer $navigationNodeTransfer): NavigationNodeTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationNodeTransfer $navigationNodeTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationNodeTransfer
-     */
     public function updateNavigationNode(NavigationNodeTransfer $navigationNodeTransfer): NavigationNodeTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\DuplicateNavigationTransfer $duplicateNavigationTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationResponseTransfer
-     */
     public function duplicateNavigation(DuplicateNavigationTransfer $duplicateNavigationTransfer): NavigationResponseTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationNodeTransfer $navigationNodeTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationNodeTransfer|null
-     */
     public function findNavigationNode(NavigationNodeTransfer $navigationNodeTransfer): ?NavigationNodeTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationNodeTransfer $navigationNodeTransfer
-     *
-     * @return void
-     */
     public function deleteNavigationNode(NavigationNodeTransfer $navigationNodeTransfer): void;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationTransfer $navigationTransfer
-     * @param \Generated\Shared\Transfer\LocaleTransfer|null $localeTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationTreeTransfer
-     */
     public function findNavigationTree(NavigationTransfer $navigationTransfer, ?LocaleTransfer $localeTransfer = null): NavigationTreeTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationTreeTransfer $navigationTreeTransfer
-     *
-     * @return void
-     */
     public function updateNavigationTreeHierarchy(NavigationTreeTransfer $navigationTreeTransfer): void;
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationCriteriaTransfer $navigationCriteriaTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationTransfer|null
-     */
     public function findNavigationByCriteria(NavigationCriteriaTransfer $navigationCriteriaTransfer): ?NavigationTransfer;
 }

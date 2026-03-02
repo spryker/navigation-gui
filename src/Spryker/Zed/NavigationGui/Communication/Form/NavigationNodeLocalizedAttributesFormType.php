@@ -86,11 +86,6 @@ class NavigationNodeLocalizedAttributesFormType extends AbstractType
      */
     public const GROUP_EXTERNAL_URL = 'external_url';
 
-    /**
-     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver
-     *
-     * @return void
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

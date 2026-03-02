@@ -24,11 +24,6 @@ class NavigationGuiToUrlBridge implements NavigationGuiToUrlInterface
         $this->urlFacade = $urlFacade;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\UrlTransfer $urlTransfer
-     *
-     * @return \Generated\Shared\Transfer\UrlTransfer|null
-     */
     public function findUrlCaseInsensitive(UrlTransfer $urlTransfer): ?UrlTransfer
     {
         return $this->urlFacade->findUrlCaseInsensitive($urlTransfer);

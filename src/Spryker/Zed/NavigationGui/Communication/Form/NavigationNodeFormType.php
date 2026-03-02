@@ -79,11 +79,6 @@ class NavigationNodeFormType extends AbstractType
      */
     public const NODE_TYPE_EXTERNAL_URL = 'external_url';
 
-    /**
-     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver
-     *
-     * @return void
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

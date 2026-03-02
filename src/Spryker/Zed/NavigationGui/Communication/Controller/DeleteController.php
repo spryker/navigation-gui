@@ -72,11 +72,6 @@ class DeleteController extends AbstractController
         ]);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\NavigationTransfer $navigationTransfer
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
     protected function handleSubmitForm(NavigationTransfer $navigationTransfer): RedirectResponse
     {
         $this->getFactory()->getNavigationFacade()->deleteNavigation($navigationTransfer);

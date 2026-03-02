@@ -11,10 +11,5 @@ use Generated\Shared\Transfer\UrlTransfer;
 
 interface NavigationGuiToUrlInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\UrlTransfer $urlTransfer
-     *
-     * @return \Generated\Shared\Transfer\UrlTransfer|null
-     */
     public function findUrlCaseInsensitive(UrlTransfer $urlTransfer): ?UrlTransfer;
 }

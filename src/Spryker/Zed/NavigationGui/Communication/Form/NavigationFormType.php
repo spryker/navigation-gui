@@ -40,11 +40,6 @@ class NavigationFormType extends AbstractType
      */
     public const FIELD_IS_ACTIVE = 'is_active';
 
-    /**
-     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver
-     *
-     * @return void
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

@@ -24,10 +24,6 @@ class NavigationNodeFormDataProvider
      */
     protected $localeFacade;
 
-    /**
-     * @param \Spryker\Zed\NavigationGui\Dependency\Facade\NavigationGuiToNavigationInterface $navigationFacade
-     * @param \Spryker\Zed\NavigationGui\Dependency\Facade\NavigationGuiToLocaleInterface $localeFacade
-     */
     public function __construct(NavigationGuiToNavigationInterface $navigationFacade, NavigationGuiToLocaleInterface $localeFacade)
     {
         $this->navigationFacade = $navigationFacade;

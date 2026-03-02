@@ -17,9 +17,6 @@ class NavigationFormDataProvider
      */
     protected $navigationFacade;
 
-    /**
-     * @param \Spryker\Zed\NavigationGui\Dependency\Facade\NavigationGuiToNavigationInterface $navigationFacade
-     */
     public function __construct(NavigationGuiToNavigationInterface $navigationFacade)
     {
         $this->navigationFacade = $navigationFacade;

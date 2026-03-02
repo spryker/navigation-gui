@@ -32,11 +32,6 @@ class DuplicateNavigationForm extends AbstractType
      */
     protected const FIELD_KEY = 'key';
 
-    /**
-     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver
-     *
-     * @return void
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -99,9 +94,6 @@ class DuplicateNavigationForm extends AbstractType
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'duplicate_navigation';

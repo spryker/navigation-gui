@@ -34,9 +34,6 @@ class NavigationTable extends AbstractTable
      */
     protected $navigationGuiQueryContainer;
 
-    /**
-     * @param \Spryker\Zed\NavigationGui\Persistence\NavigationGuiQueryContainerInterface $navigationGuiQueryContainer
-     */
     public function __construct(NavigationGuiQueryContainerInterface $navigationGuiQueryContainer)
     {
         $this->navigationGuiQueryContainer = $navigationGuiQueryContainer;
@@ -149,11 +146,6 @@ class NavigationTable extends AbstractTable
         );
     }
 
-    /**
-     * @param int $idNavigation
-     *
-     * @return string
-     */
     protected function createDuplicateButton(int $idNavigation): string
     {
         return $this->generateViewButton(
