@@ -7,6 +7,7 @@
 
 namespace Spryker\Zed\NavigationGui\Communication\Form\DataProvider;
 
+use ArrayObject;
 use Generated\Shared\Transfer\NavigationNodeLocalizedAttributesTransfer;
 use Generated\Shared\Transfer\NavigationNodeTransfer;
 use Spryker\Zed\NavigationGui\Dependency\Facade\NavigationGuiToLocaleInterface;
@@ -30,22 +31,25 @@ class NavigationNodeFormDataProvider
         $this->localeFacade = $localeFacade;
     }
 
-    /**
-     * @param int|null $idNavigationNode
-     *
-     * @return \Generated\Shared\Transfer\NavigationNodeTransfer
-     */
-    public function getData($idNavigationNode = null)
+    public function getData(?int $idNavigationNode = null): NavigationNodeTransfer
     {
-        $navigationNodeTransfer = new NavigationNodeTransfer();
-        $navigationNodeTransfer = $this->setTranslationFields($navigationNodeTransfer);
+        $localeCollection = $this->localeFacade->getLocaleCollection();
 
-        if ($idNavigationNode) {
-            $navigationNodeTransfer->setIdNavigationNode($idNavigationNode);
-            $navigationNodeTransfer = $this->navigationFacade->findNavigationNode($navigationNodeTransfer);
+        $navigationNodeTransfer = new NavigationNodeTransfer();
+        $navigationNodeTransfer = $this->setTranslationFields($navigationNodeTransfer, $localeCollection);
+
+        if (!$idNavigationNode) {
+            return $navigationNodeTransfer;
         }
 
-        return $navigationNodeTransfer;
+        $navigationNodeTransfer->setIdNavigationNode($idNavigationNode);
+        $foundNavigationNodeTransfer = $this->navigationFacade->findNavigationNode($navigationNodeTransfer);
+
+        if (!$foundNavigationNodeTransfer) {
+            return $navigationNodeTransfer;
+        }
+
+        return $this->expandWithMissingLocales($foundNavigationNodeTransfer, $localeCollection);
     }
 
     /**
@@ -57,15 +61,11 @@ class NavigationNodeFormDataProvider
     }
 
     /**
-     * @param \Generated\Shared\Transfer\NavigationNodeTransfer $navigationNodeTransfer
-     *
-     * @return \Generated\Shared\Transfer\NavigationNodeTransfer
+     * @param array<\Generated\Shared\Transfer\LocaleTransfer> $localeCollection
      */
-    protected function setTranslationFields(NavigationNodeTransfer $navigationNodeTransfer)
+    protected function setTranslationFields(NavigationNodeTransfer $navigationNodeTransfer, array $localeCollection): NavigationNodeTransfer
     {
-        $availableLocales = $this->localeFacade->getLocaleCollection();
-
-        foreach ($availableLocales as $localeTransfer) {
+        foreach ($localeCollection as $localeTransfer) {
             $navigationNodeLocalizedAttributesTransfer = new NavigationNodeLocalizedAttributesTransfer();
             $navigationNodeLocalizedAttributesTransfer->setFkLocale($localeTransfer->getIdLocale());
 
@@ -73,5 +73,66 @@ class NavigationNodeFormDataProvider
         }
 
         return $navigationNodeTransfer;
+    }
+
+    /**
+     * @param array<\Generated\Shared\Transfer\LocaleTransfer> $localeCollection
+     */
+    protected function expandWithMissingLocales(NavigationNodeTransfer $navigationNodeTransfer, array $localeCollection): NavigationNodeTransfer
+    {
+        $activeLocaleIds = $this->indexActiveLocaleIds($localeCollection);
+
+        $navigationNodeTransfer = $this->removeStaleLocalizedAttributes($navigationNodeTransfer, $activeLocaleIds);
+
+        $existingFkLocales = [];
+        foreach ($navigationNodeTransfer->getNavigationNodeLocalizedAttributes() as $localizedAttributesTransfer) {
+            $existingFkLocales[$localizedAttributesTransfer->getFkLocale()] = true;
+        }
+
+        foreach ($localeCollection as $localeTransfer) {
+            if (isset($existingFkLocales[$localeTransfer->getIdLocale()])) {
+                continue;
+            }
+
+            $navigationNodeLocalizedAttributesTransfer = new NavigationNodeLocalizedAttributesTransfer();
+            $navigationNodeLocalizedAttributesTransfer->setFkLocale($localeTransfer->getIdLocale());
+            $navigationNodeTransfer->addNavigationNodeLocalizedAttribute($navigationNodeLocalizedAttributesTransfer);
+        }
+
+        return $navigationNodeTransfer;
+    }
+
+    /**
+     * @param array<\Generated\Shared\Transfer\LocaleTransfer> $localeCollection
+     *
+     * @return array<int, bool>
+     */
+    protected function indexActiveLocaleIds(array $localeCollection): array
+    {
+        $activeLocaleIds = [];
+
+        foreach ($localeCollection as $localeTransfer) {
+            $activeLocaleIds[$localeTransfer->getIdLocaleOrFail()] = true;
+        }
+
+        return $activeLocaleIds;
+    }
+
+    /**
+     * @param array<int, bool> $activeLocaleIds
+     */
+    protected function removeStaleLocalizedAttributes(NavigationNodeTransfer $navigationNodeTransfer, array $activeLocaleIds): NavigationNodeTransfer
+    {
+        $validLocalizedAttributes = new ArrayObject();
+
+        foreach ($navigationNodeTransfer->getNavigationNodeLocalizedAttributes() as $localizedAttributesTransfer) {
+            if (!isset($activeLocaleIds[$localizedAttributesTransfer->getFkLocale()])) {
+                continue;
+            }
+
+            $validLocalizedAttributes->append($localizedAttributesTransfer);
+        }
+
+        return $navigationNodeTransfer->setNavigationNodeLocalizedAttributes($validLocalizedAttributes);
     }
 }
