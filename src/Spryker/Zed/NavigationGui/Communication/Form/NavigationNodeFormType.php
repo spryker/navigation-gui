@@ -9,6 +9,7 @@ namespace Spryker\Zed\NavigationGui\Communication\Form;
 
 use DateTime;
 use Generated\Shared\Transfer\NavigationNodeTransfer;
+use Spryker\Zed\Gui\Communication\Form\Type\DatePickerType;
 use Spryker\Zed\Kernel\Communication\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -53,6 +54,21 @@ class NavigationNodeFormType extends AbstractType
      * @var string
      */
     public const FIELD_VALID_TO = 'valid_to';
+
+    /**
+     * @var string
+     */
+    protected const RANGE_GROUP_VALIDITY = 'navigation-node-validity';
+
+    /**
+     * @var string
+     */
+    protected const FORMAT_DATE = 'dd.MM.yyyy';
+
+    /**
+     * @var string
+     */
+    protected const LEGACY_VALIDITY_FIELD_CLASS = 'datepicker safe-datetime';
 
     /**
      * @var string
@@ -174,17 +190,11 @@ class NavigationNodeFormType extends AbstractType
      */
     protected function addValidFromField(FormBuilderInterface $builder)
     {
-        $builder->add(static::FIELD_VALID_FROM, DateType::class, [
-            'label' => 'Valid from',
-            'widget' => 'single_text',
-            'required' => false,
-            'attr' => [
-                'class' => 'datepicker safe-datetime',
-            ],
-            'constraints' => [
-                $this->createValidFromRangeConstraint(),
-            ],
-        ]);
+        $builder->add(
+            static::FIELD_VALID_FROM,
+            $this->getValidityFieldType(),
+            $this->getValidFromFieldOptions(),
+        );
 
         $builder->get(static::FIELD_VALID_FROM)
             ->addModelTransformer($this->createDateTimeModelTransformer());
@@ -199,17 +209,11 @@ class NavigationNodeFormType extends AbstractType
      */
     protected function addValidToField(FormBuilderInterface $builder)
     {
-        $builder->add(static::FIELD_VALID_TO, DateType::class, [
-            'label' => 'Valid to',
-            'widget' => 'single_text',
-            'required' => false,
-            'attr' => [
-                'class' => 'datepicker safe-datetime',
-            ],
-            'constraints' => [
-                $this->createValidToFieldRangeConstraint(),
-            ],
-        ]);
+        $builder->add(
+            static::FIELD_VALID_TO,
+            $this->getValidityFieldType(),
+            $this->getValidToFieldOptions(),
+        );
 
         $builder->get(static::FIELD_VALID_TO)
             ->addModelTransformer($this->createDateTimeModelTransformer());
@@ -289,6 +293,77 @@ class NavigationNodeFormType extends AbstractType
         }
 
         $event->setData($navigationNodeTransfer);
+    }
+
+    protected function getValidityFieldType(): string
+    {
+        if ($this->isGuiDatePickerTypeAvailable()) {
+            return DatePickerType::class;
+        }
+
+        return DateType::class;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getValidFromFieldOptions(): array
+    {
+        return $this->getValidityFieldOptions(
+            [
+                'label' => 'Valid from',
+                'required' => false,
+                'constraints' => [
+                    $this->createValidFromRangeConstraint(),
+                ],
+            ],
+            DatePickerType::RANGE_ROLE_START,
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getValidToFieldOptions(): array
+    {
+        return $this->getValidityFieldOptions(
+            [
+                'label' => 'Valid to',
+                'required' => false,
+                'constraints' => [
+                    $this->createValidToFieldRangeConstraint(),
+                ],
+            ],
+            DatePickerType::RANGE_ROLE_END,
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
+    protected function getValidityFieldOptions(array $options, string $rangeRole): array
+    {
+        if ($this->isGuiDatePickerTypeAvailable()) {
+            return $options + [
+                'range_group' => static::RANGE_GROUP_VALIDITY,
+                'range_role' => $rangeRole,
+                'format' => static::FORMAT_DATE,
+            ];
+        }
+
+        return $options + [
+            'widget' => 'single_text',
+            'attr' => [
+                'class' => static::LEGACY_VALIDITY_FIELD_CLASS,
+            ],
+        ];
+    }
+
+    protected function isGuiDatePickerTypeAvailable(): bool
+    {
+        return class_exists(DatePickerType::class);
     }
 
     /**
