@@ -226,8 +226,8 @@ class NavigationNodeFormType extends AbstractType
      */
     protected function createValidFromRangeConstraint()
     {
-        return new Callback([
-            'callback' => function ($dateTimeFrom, ExecutionContext $context) {
+        return new Callback(
+            callback: function ($dateTimeFrom, ExecutionContext $context) {
                 $dateTimeTo = $context->getRoot()->getData()->getValidTo();
                 if (!$dateTimeFrom || !$dateTimeTo) {
                     return;
@@ -237,7 +237,7 @@ class NavigationNodeFormType extends AbstractType
                     $context->addViolation('Date "Valid from" cannot be later than "Valid to".');
                 }
             },
-        ]);
+        );
     }
 
     /**
@@ -245,8 +245,8 @@ class NavigationNodeFormType extends AbstractType
      */
     protected function createValidToFieldRangeConstraint()
     {
-        return new Callback([
-            'callback' => function ($dateTimeTo, ExecutionContext $context) {
+        return new Callback(
+            callback: function ($dateTimeTo, ExecutionContext $context) {
                 $dateTimeFrom = $context->getRoot()->getData()->getValidFrom();
                 if (!$dateTimeFrom || !$dateTimeTo) {
                     return;
@@ -256,7 +256,7 @@ class NavigationNodeFormType extends AbstractType
                     $context->addViolation('Date "Valid to" cannot be earlier than "Valid from".');
                 }
             },
-        ]);
+        );
     }
 
     /**
@@ -295,6 +295,9 @@ class NavigationNodeFormType extends AbstractType
         $event->setData($navigationNodeTransfer);
     }
 
+    /**
+     * @phpstan-return class-string<\Symfony\Component\Form\FormTypeInterface>
+     */
     protected function getValidityFieldType(): string
     {
         if ($this->isGuiDatePickerTypeAvailable()) {

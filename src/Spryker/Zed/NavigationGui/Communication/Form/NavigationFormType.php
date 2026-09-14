@@ -93,9 +93,9 @@ class NavigationFormType extends AbstractType
                 'label' => 'Key',
                 'constraints' => [
                     new NotBlank(),
-                    new Callback([
-                        'callback' => [$this, 'uniqueKeyCheck'],
-                    ]),
+                    new Callback(
+                        callback: [$this, 'uniqueKeyCheck'],
+                    ),
                 ],
             ]);
 

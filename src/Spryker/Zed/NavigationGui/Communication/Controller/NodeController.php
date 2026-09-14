@@ -41,7 +41,7 @@ class NodeController extends AbstractController
     public function createAction(Request $request)
     {
         $idNavigation = $this->castId($request->query->getInt(static::PARAM_ID_NAVIGATION));
-        $idNavigationNode = $request->query->getInt(static::PARAM_ID_NAVIGATION_NODE);
+        $idNavigationNode = (int)$request->query->get(static::PARAM_ID_NAVIGATION_NODE, 0);
         $idSelectedTreeNode = $request->query->get(static::PARAM_ID_SELECTED_TREE_NODE);
 
         $navigationNodeFormDataProvider = $this->getFactory()

@@ -162,7 +162,10 @@ function selectNode(idNavigationNode) {
  */
 function setNodeSelectListener(idNavigation) {
     $('#navigation-tree').on('select_node.jstree', function (e, data) {
-        var idNavigationNode = data.node.data.idNavigationNode;
+        // The root node's <li> carries no data-id-navigation-node attribute (unlike child nodes),
+        // so this is `undefined` for it; default to 0 so jQuery's $.param() serializes an actual
+        // value instead of an empty string, which the backend now rejects with a 400.
+        var idNavigationNode = data.node.data.idNavigationNode || 0;
 
         loadForm(idNavigation, idNavigationNode);
     });
