@@ -5,42 +5,59 @@
 
 'use strict';
 
+var tableAccess = require('ZedGuiModules/libs/table/table-access');
 var navigationTree = require('./navigation-tree');
-var navigationTable;
+var navigationHandle;
 
 /**
  * @param {string} selector
- */
-function initialize(selector) {
-    navigationTable = $(selector).DataTable();
-
-    navigationTree.initialize();
-
-    $(selector).find('tbody').on('click', 'tr', tableRowSelect);
-    navigationTable.on('draw', selectFirstRow);
-    navigationTable.on('select', loadNavigationTree);
-    navigationTable.on('deselect', resetNavigationTree);
-}
-
-/**
- * @param {Event} e
  *
  * @return {void}
  */
-function tableRowSelect(e) {
-    if (!$(e.target).is('td')) {
+function initialize(selector) {
+    var navigationTable = document.querySelector(selector);
+
+    if (!navigationTable) {
         return;
     }
 
-    navigationTable.rows().deselect();
-    navigationTable.row($(this).index()).select();
+    navigationTree.initialize();
+
+    $(navigationTable).on('click', 'tbody > tr:not(.child)', tableRowSelect);
+
+    tableAccess.requestTable(navigationTable, function (handle) {
+        navigationHandle = handle;
+
+        handle.on('draw', selectFirstRow);
+
+        handle.raw().on('select', loadNavigationTree).on('deselect', resetNavigationTree);
+    });
 }
 
 /**
  * @return {void}
  */
-function selectFirstRow(e, settings) {
-    getDataTableApi(settings).row(0).select();
+function tableRowSelect() {
+    selectRow(this);
+}
+
+/**
+ * @return {void}
+ */
+function selectFirstRow() {
+    selectRow(0);
+}
+
+/**
+ * @param {Object|number} row - Row node or row index.
+ *
+ * @return {void}
+ */
+function selectRow(row) {
+    var api = navigationHandle.raw();
+
+    api.rows().deselect();
+    api.row(row).select();
 }
 
 /**
@@ -54,17 +71,8 @@ function loadNavigationTree(e, api, type, indexes) {
 /**
  * @return {void}
  */
-function resetNavigationTree(e, api) {
+function resetNavigationTree() {
     navigationTree.reset();
-}
-
-/**
- * @param {object} settings
- *
- * @returns {DataTable.Api}
- */
-function getDataTableApi(settings) {
-    return new $.fn.dataTable.Api(settings);
 }
 
 /**
